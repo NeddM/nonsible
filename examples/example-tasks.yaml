@@ -1,0 +1,33 @@
+# - name: Install tree
+#   task: Install
+#   package: tree
+
+# - name: Uninstall tree
+#   task: Uninstall
+#   package: tree
+
+# - name: CopyToRemote
+#   task: CopyToRemote
+#   file: ~/Dev/Rust/nonsible/README.md
+
+# - name: Simply run 1
+#   task: Run
+#   command: apt install tree -y
+
+# - name: Simply run 2
+#   task: Run
+#   command: apt remove tree -y
+
+# - name: CopyFromRemote
+#   task: CopyFromRemote
+#   from: $HOME/Documents
+#   to: $HOME
+
+- name: UpdateAll
+  task: UpdateAll
+  package: 
+
+- name: UpgradeAll
+  task: UpgradeAll
+  package: 
+

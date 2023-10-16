@@ -1,0 +1,17 @@
+- name: ne
+  username: nedd
+  ip: 1.1.1.1
+  sudo: true
+  sudo_password: holamudno
+  pem: ./pem/pemname.pem
+
+
+- name: illo
+  username: hola
+  ip: 1.2.3.4
+  sudo: true
+  sudo_password: heeeeey
+  pem: ./pem/pemname.pem
+
+
+

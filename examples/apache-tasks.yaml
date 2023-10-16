@@ -1,0 +1,25 @@
+- name: Update server
+  task: UpdateAll
+  package: 
+
+- name: Upgrade server
+  task: UpgradeAll
+  package: 
+
+- name: Install nginx server
+  task: Install
+  package: nginx
+
+- name: Allow firewall
+  task: Run
+  command: ufw allow 'Nginx HTTP'
+
+- name: Creating an index.html
+  task: Run
+  command: echo '<html><h1>hi Linkedin from Nonsible!!</h1></html>' >> ~/index.html
+
+- name: Moving index to /var/www/html/
+  task: Run
+  command: mv ~/index.html /var/www/html/
+
+
