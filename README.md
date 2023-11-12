@@ -8,7 +8,7 @@
 
 # English
 
-Nonsible is an alternative to Ansible. It is open source and developed in **Rust**. The idea is not to depend on factors like Python, as it commits us to having Python installed on all of our machines, among other requirements.
+NonsiblCon etiqueta alternative to Ansible. It is open source and developed in **Rust**. The idea is not to depend on factors like Python, as it commits us to having Python installed on all of our machines, among other requirements.
 
 On several occasions, I have encountered the problem that I couldn't install _pip_, and I had to resort to using _pip3_ or even _python3 -m_. This seems very unintuitive to me; every time I install Ansible, I have to do a different workaround.
 
@@ -40,7 +40,7 @@ Usage types are _completely interactive_, _semi-interactive_, and _unattended_.
 
     It's interesting because we can see in the table the added connections and their details, ideal for checking if all the data is as desired.
 
--   **Unattended** (With two arguments):
+-   **Unattended** (With two or more arguments):
     It is the perfect methodology for creating automation in a CI/CD pipeline.
     The first argument would be a YAML file of targets (connections), and the second would be the YAML file of tasks.
 
@@ -52,45 +52,90 @@ Usage types are _completely interactive_, _semi-interactive_, and _unattended_.
     In this YAML we are going to write our connections data as an array.
 
 ```yaml
+# Without label
 - name: ne
   username: nedd
-  ip: 1.1.1.1
+  ip: 1.2.4.8
   sudo: true
-  sudo_password: holamudno
-  pem: ./pem/pemname.pem
+  sudo_password: holamundo
+  pem: ./pem/pemname2.pem
 
+# With label
 - name: illo
   username: hola
-  ip: 1.2.3.4
+  ip: 8.4.2.1
   sudo: true
-  sudo_password: heeeeey
-  pem: ./pem/pemname.pem
+  sudo_password: thisisapassword
+  pem: ./pem/pemname1.pem
+  labels:
+    - tree
 ```
 
 -   Tasks YAML:
     In this YAML we define the tasks as an array.
 
 ```yaml
-# Updated the whole system
-- name: UpdateAll
-  task: UpdateAll
-  package:
-
-# Upgrades the whole system
-- name: UpgradeAll
-  task: UpgradeAll
-  package:
-
-# Installs the Tree tool
+# Install a package, introducing it's name
 - name: Install tree
   task: Install
   package: tree
 
-# Uninstalls the Tree tool
+# Uninstall a package, introducing it's name
 - name: Uninstall tree
   task: Uninstall
   package: tree
+
+# Simply runs a command
+- name: Simply run 1
+  task: Run
+  command: apt install tree -y
+
+# Update all the system dependencies
+- name: UpdateAll
+  task: UpdateAll
+  package: 
+
+# Upgrade all the system dependencies
+- name: UpgradeAll
+  task: UpgradeAll
+  package: 
+
+# Any of the previous tasks can be labeled as you want
+- name: Update with label
+  task: UpdateAll
+  package: 
+  matchLabels: 
+    - testing
+
+- name: Upgrade with label
+  task: UpgradeAll
+  package: 
+  matchLabels: 
+    - testing
+
+- name: Install tree with label
+  task: Install
+  package: tree
+  matchLabels: 
+    - prueba
+    - testing
+
+- name: Uninstall tree with label
+  task: Uninstall
+  package: tree
+  matchLabels: 
+    - testing
 ```
+
+## Labels and matchlabels
+If you set a matchlabel to a task, the task only will be executed by a connection that has the same label.
+This allow you to filtering the execution of tasks.
+
+## Additional arguments
+--help or -h: Print inline help.
+--force: Runs Nonsible even if a connection is failed. The failed connection's tasks wont be executed.
+--continueonerror: Runs Nonsible even if a connection is failed, and executes every task on failed connections too.
+--no-color: Print information about the tasks, CAREFUL! This argument maybe print sensible data.
 
 I will soon provide documentation with all the types of tasks that can be performed, and we will implement more tasks that I believe are necessary.
 
@@ -142,44 +187,89 @@ Esta manera de usar el script se encargará de realizar el test de sistema opera
     En este YAML vamos a definir los datos de nuestras conexiones. La idea es definirlos a modo de array.
 
 ```yaml
+# Sin etiqueta
 - name: ne
   username: nedd
-  ip: 1.1.1.1
+  ip: 1.2.4.8
   sudo: true
-  sudo_password: holamudno
-  pem: ./pem/pemname.pem
+  sudo_password: holamundo
+  pem: ./pem/pemname2.pem
 
+# Con etiqueta
 - name: illo
   username: hola
-  ip: 1.2.3.4
+  ip: 8.4.2.1
   sudo: true
-  sudo_password: heeeeey
-  pem: ./pem/pemname.pem
+  sudo_password: thisisapassword
+  pem: ./pem/pemname1.pem
+  labels:
+    - tree
 ```
 
 -   Tasks YAML (tareas):
     Definimos las tareas que queremos realizar, en el orden deseado. Hay que definir las tareas a modo de array.
 
 ```yaml
-# Realiza un update del sistema completo
-- name: UpdateAll
-  task: UpdateAll
-  package:
-
-# Realiza un upgrade del sistema completo
-- name: UpgradeAll
-  task: UpgradeAll
-  package:
-
-# Instala la herramienta Tree
+# Instala un paquete, introduciendo su nombre
 - name: Install tree
   task: Install
   package: tree
 
-# Desinstala la herramienta Tree
+# Desinstala un paquete
 - name: Uninstall tree
   task: Uninstall
   package: tree
+
+# Executa un comando
+- name: Simply run 1
+  task: Run
+  command: apt install tree -y
+
+# Actualiza todas las dependencias del sistema
+- name: UpdateAll
+  task: UpdateAll
+  package: 
+
+# Upgradea todas las dependencias del sistema
+- name: UpgradeAll
+  task: UpgradeAll
+  package: 
+
+# Todas las tareas que hemos visto previamente se pueden etiquetar
+- name: Update with label
+  task: UpdateAll
+  package: 
+  matchLabels: 
+    - testing
+
+- name: Upgrade with label
+  task: UpgradeAll
+  package: 
+  matchLabels: 
+    - testing
+
+- name: Install tree with label
+  task: Install
+  package: tree
+  matchLabels: 
+    - prueba
+    - testing
+
+- name: Uninstall tree with label
+  task: Uninstall
+  package: tree
+  matchLabels: 
+    - testing
 ```
+
+## Labels y matchlabels
+Si configuras una tarea con una matchlabel, esta tarea sólo será ejecutada por una conexión que tenga la misma etiqueta.
+Esto te permite filtrar la ejecución de algunas tareas en algunas conexiones.
+
+## Additional arguments
+--help or -h: Imprime la ayuda en pantalla.
+--force: Ejecuta Nonsible incluso de una conexión ha fallado. Las tareas de las conexiones fallidas no serán ejecutadas.
+--continueonerror: Ejecuta Nonsible incluso si la conexión ha fallado, y tamibén ejecuta todas las tareas de esa conexión fallida.
+--no-color: Imprime por pantalla información adicional sobre las tareas. ¡CUIDADO! Este argumento puede que imprima información sensible.
 
 Pronto dejaré lista una documentación con todos los tipos de tareas que se pueden realizar, e implementaremos más tareas que yo pienso que son necesarias.

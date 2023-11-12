@@ -11,6 +11,7 @@ pub struct Task {
     pub command: String,
     pub package: String,
     pub file: String,
+    pub matchlabels: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
@@ -42,16 +43,20 @@ impl Task {
     pub fn list_task(tasks: &mut Vec<Task>) {
         let mut table = Table::new();
 
-        table.add_row(prettytable::row![H3cb -> "TASKS"]);
-        table.add_row(prettytable::row![cb -> "NAME", cb -> "TASK", cb -> "PACKAGE"]);
+        table.add_row(prettytable::row![H4cb -> "TASKS"]);
+        table.add_row(
+            prettytable::row![cb -> "NAME", cb -> "TASK", cb -> "PACKAGE", cb -> "MATCH LABELS"],
+        );
 
         if tasks.len() > 0 {
             for order_task in tasks {
                 table.add_row(Row::new(vec![
                     Cell::new(&order_task.name),
-                    // Cell::new(&order_task.task),
                     Cell::new(&order_task.task.to_string()),
                     Cell::new(&order_task.package),
+                    Cell::new(&representing_matchlabels_as_string(
+                        order_task.matchlabels.clone(),
+                    )),
                 ]));
             }
         } else {
@@ -66,7 +71,7 @@ impl Task {
     }
 
     pub fn read_tasks(task_yaml: String) -> Vec<Task> {
-        // Reads the YAML hosts file
+        // Reads the YAML tasks file
         let mut file = File::open(task_yaml).expect("Couldn't open the file");
 
         // Reads the yaml and parses it to an String
@@ -112,16 +117,40 @@ impl Task {
                     Some(file) => file.to_string(),
                     None => " ".to_string(),
                 };
+
+                let matchlabels = match task_order["matchLabels"].as_sequence() {
+                    Some(labels_yaml) => labels_yaml
+                        .iter()
+                        .map(|label| label.as_str().unwrap_or_default().to_string())
+                        .collect(),
+                    None => Vec::new(),
+                };
+
                 let task = Task {
                     name,
                     task,
                     command,
                     package,
                     file,
+                    matchlabels,
                 };
                 tasks.push(task);
             }
         }
         tasks
     }
+}
+
+fn representing_matchlabels_as_string(vector: Vec<String>) -> String {
+    let mut result = String::new();
+
+    for (index, item) in vector.iter().enumerate() {
+        result.push_str(item);
+
+        if index < vector.len() - 1 {
+            result.push_str(", ");
+        }
+    }
+
+    result
 }

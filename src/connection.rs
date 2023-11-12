@@ -25,6 +25,7 @@ pub struct Connection {
     sudo_password: String,
     os: String,
     pem: String,
+    labels: Vec<String>,
 }
 
 impl Connection {
@@ -46,7 +47,7 @@ impl Connection {
         let _ = stdin.read_line(&mut name);
         name = name.trim().to_string();
 
-        println!("¿Pem file? y/n: ");
+        println!("Pem file? y/n: ");
         let mut r_pemfile: String = String::new();
         let _ = stdin.read_line(&mut r_pemfile);
 
@@ -58,7 +59,7 @@ impl Connection {
             String::from("")
         };
 
-        println!("¿Sudo? y/n: ");
+        println!("Sudo? y/n: ");
         let mut r_sudo: String = String::new();
         let _ = stdin.read_line(&mut r_sudo);
 
@@ -76,6 +77,26 @@ impl Connection {
             String::from("")
         };
 
+        println!("Adding labels? y/n: ");
+        let mut res_labels: String = String::new();
+        let _ = stdin.read_line(&mut res_labels);
+
+        let labels = if res_labels.trim().to_uppercase() == "Y" {
+            println!("Add the labels separating by commas");
+            println!("E.g: label1,label2,label3");
+            let mut prev_labels = String::new();
+            let _ = stdin.read_line(&mut prev_labels);
+
+            let split_labels: Vec<String> = prev_labels
+                .split(",")
+                .map(|s| s.trim().to_string())
+                .collect();
+            split_labels
+        } else {
+            let split_labels: Vec<String> = vec![];
+            split_labels
+        };
+
         let conn: Connection = Connection {
             ip: ip_adress,
             username,
@@ -85,6 +106,7 @@ impl Connection {
             sudo,
             sudo_password,
             pem: pemfile,
+            labels,
         };
         conn
     }
@@ -92,9 +114,9 @@ impl Connection {
     pub fn list_connection(connections: &mut Vec<Connection>) {
         let mut table = Table::new();
 
-        table.add_row(prettytable::row![H4cb -> "TARGETS"]);
+        table.add_row(prettytable::row![H5cb -> "TARGETS"]);
         table
-            .add_row(prettytable::row![cb -> "NAME", cb -> "CONNECTION", cb -> "SUDO", cb -> "OS"]);
+            .add_row(prettytable::row![cb -> "NAME", cb -> "CONNECTION", cb -> "SUDO", cb -> "OS", cb -> "LABELS"]);
 
         if connections.len() > 0 {
             for conn in connections {
@@ -104,6 +126,7 @@ impl Connection {
                     Cell::new(&connection),
                     Cell::new(&conn.sudo.to_string()),
                     Cell::new(&conn.os),
+                    Cell::new(&utils::representing_labels_as_string(conn.labels.clone())),
                 ]));
             }
         } else {
@@ -112,6 +135,7 @@ impl Connection {
                 Cell::new("user@1.2.3.4"),
                 Cell::new("true"),
                 Cell::new("Ubuntu"),
+                Cell::new("label1, label2"),
             ]));
         }
 
@@ -158,100 +182,155 @@ impl Connection {
         }
     }
 
-    pub fn install_package_no_tty(connections: &mut Vec<Connection>, packages: &mut Vec<Task>) {
+    pub fn install_package_no_tty(
+        connections: &mut Vec<Connection>,
+        packages: &mut Vec<Task>,
+        args: &Vec<String>,
+    ) {
         for conn in connections {
+            // Breaks the loop if a connection fails
+            if conn.os == "Connection failed!".to_string() {
+                // Forces the installs if a connection fails
+                if args.contains(&"--force".to_string()) {
+                } else {
+                    let warning_red = "  WARNING!!".to_string();
+                    println!("\n{}", warning_red.red());
+                    println!("A connection failed!");
+                    println!("You can keep running Nonsible anyways using the argument --force \n");
+                    return;
+                }
+            }
             for package in &mut *packages {
-                let sudo = utils::parse_sudo(conn.sudo);
-                let built_ssh = conn.username.clone() + "@" + &conn.ip.to_string();
-
-                let repo = if package.task == TaskType::Install {
-                    utils::install_process(&conn.os)
-                } else if package.task == TaskType::Run {
-                    let sudo = utils::parse_sudo(conn.sudo);
-                    let built_ssh = conn.username.clone() + "@" + &conn.ip.to_string();
-                    let pass_command = "echo '".to_owned() + &conn.sudo_password + "' | ";
-                    let command = sudo + " -S " + &package.command;
-
-                    let install = if conn.pem.is_empty() {
-                        Command::new("ssh")
-                            .args([&built_ssh, &pass_command, &command])
-                            .output()
-                            .unwrap()
+                // Skips the processes on the failed connections
+                if conn.os == "Connection failed!".to_string() {
+                    if args.contains(&"--continueonerror".to_string()) {
                     } else {
-                        Command::new("ssh")
-                            .args(["-i", conn.pem.as_str(), &built_ssh, &pass_command, &command])
-                            .output()
-                            .unwrap()
-                    };
-
-                    // Just for debug the installation
-                    // println!("{:?}", install);
-
-                    match install.status.code() {
-                        Some(0) => println!(
-                            "{} succeessfully processsed on {}",
-                            package.name.green(),
-                            conn.name.green()
-                        ),
-                        _ => println!("{} failed on {}", package.name.red(), conn.name.red()),
+                        let warning_red = "  WARNING!!".to_string();
+                        println!("\n{}", warning_red.red());
+                        println!("A connection failed!");
+                        println!("Nonsible wont do any task on failed connections");
+                        println!(
+                            "You can keep running the tasks anyways using the argument --continueonerror \n"
+                        );
+                        break;
                     }
+                }
+                for label in &conn.labels {
+                    if package.matchlabels.contains(&label) || package.matchlabels.len() == 0 {
+                        let sudo = utils::parse_sudo(conn.sudo);
+                        let built_ssh = conn.username.clone() + "@" + &conn.ip.to_string();
 
-                    continue;
-                } else if package.task == TaskType::Uninstall {
-                    utils::uninstall_process(&conn.os)
-                } else if package.task == TaskType::UpdateAll {
-                    utils::update_all_process(&conn.os)
-                } else if package.task == TaskType::UpgradeAll {
-                    utils::upgrade_all_process(&conn.os)
-                } else if package.task == TaskType::CopyToRemote {
-                    let scp = utils::copy_to_remote(
-                        conn.username.to_string(),
-                        conn.ip.to_string(),
-                        package.file.to_string(),
-                        conn.pem.to_string(),
-                    );
-                    println!("{}", scp);
-                    let copy_to_remote = Command::new("scp").args([scp]).output().unwrap();
-                    match copy_to_remote.status.code() {
-                        Some(0) => println!(
-                            "{} succesfully processed on {}",
-                            package.name.green(),
-                            conn.name.green()
-                        ),
-                        _ => println!("{} failed on {}", package.name.red(), conn.name.red()),
+                        let repo = if package.task == TaskType::Install {
+                            utils::install_process(&conn.os)
+                        } else if package.task == TaskType::Run {
+                            let sudo = utils::parse_sudo(conn.sudo);
+                            let built_ssh = conn.username.clone() + "@" + &conn.ip.to_string();
+                            let pass_command = "echo '".to_owned() + &conn.sudo_password + "' | ";
+                            let command = sudo + " -S " + &package.command;
+
+                            let install = if conn.pem.is_empty() {
+                                Command::new("ssh")
+                                    .args([&built_ssh, &pass_command, &command])
+                                    .output()
+                                    .unwrap()
+                            } else {
+                                Command::new("ssh")
+                                    .args([
+                                        "-i",
+                                        conn.pem.as_str(),
+                                        &built_ssh,
+                                        &pass_command,
+                                        &command,
+                                    ])
+                                    .output()
+                                    .unwrap()
+                            };
+
+                            // Just for debug the installation
+                            if args.contains(&"--no-color".to_string()) {
+                                println!("{:?}", install);
+                            }
+
+                            match install.status.code() {
+                                Some(0) => println!(
+                                    "{} succeessfully processsed on {}",
+                                    package.name.green(),
+                                    conn.name.green()
+                                ),
+                                _ => {
+                                    println!("{} failed on {}", package.name.red(), conn.name.red())
+                                }
+                            }
+
+                            continue;
+                        } else if package.task == TaskType::Uninstall {
+                            utils::uninstall_process(&conn.os)
+                        } else if package.task == TaskType::UpdateAll {
+                            utils::update_all_process(&conn.os)
+                        } else if package.task == TaskType::UpgradeAll {
+                            utils::upgrade_all_process(&conn.os)
+                        } else if package.task == TaskType::CopyToRemote {
+                            let scp = utils::copy_to_remote(
+                                conn.username.to_string(),
+                                conn.ip.to_string(),
+                                package.file.to_string(),
+                                conn.pem.to_string(),
+                            );
+                            println!("{}", scp);
+                            let copy_to_remote = Command::new("scp").args([scp]).output().unwrap();
+                            match copy_to_remote.status.code() {
+                                Some(0) => println!(
+                                    "{} succesfully processed on {}",
+                                    package.name.green(),
+                                    conn.name.green()
+                                ),
+                                _ => {
+                                    println!("{} failed on {}", package.name.red(), conn.name.red())
+                                }
+                            }
+                            println!("{:?}", copy_to_remote);
+
+                            continue;
+                        } else {
+                            utils::install_process(&conn.os)
+                        };
+
+                        let pass_command = "echo '".to_owned() + &conn.sudo_password + "' | ";
+                        let command = sudo + " -S " + &repo + &package.package.trim() + " -y ";
+
+                        let install = if conn.pem.is_empty() {
+                            Command::new("ssh")
+                                .args([&built_ssh, &pass_command, &command])
+                                .output()
+                                .unwrap()
+                        } else {
+                            Command::new("ssh")
+                                .args([
+                                    "-i",
+                                    conn.pem.as_str(),
+                                    &built_ssh,
+                                    &pass_command,
+                                    &command,
+                                ])
+                                .output()
+                                .unwrap()
+                        };
+
+                        // Just for debug the installation
+                        if args.contains(&"--no-color".to_string()) {
+                            println!("{:?}", install);
+                        }
+
+                        match install.status.code() {
+                            Some(0) => println!(
+                                "{} succesfully processed on {}",
+                                package.name.green(),
+                                conn.name.green()
+                            ),
+                            _ => println!("{} failed on {}", package.name.red(), conn.name.red()),
+                        }
+                        break;
                     }
-                    println!("{:?}", copy_to_remote);
-
-                    continue;
-                } else {
-                    utils::install_process(&conn.os)
-                };
-
-                let pass_command = "echo '".to_owned() + &conn.sudo_password + "' | ";
-                let command = sudo + " -S " + &repo + &package.package.trim() + " -y ";
-
-                let install = if conn.pem.is_empty() {
-                    Command::new("ssh")
-                        .args([&built_ssh, &pass_command, &command])
-                        .output()
-                        .unwrap()
-                } else {
-                    Command::new("ssh")
-                        .args(["-i", conn.pem.as_str(), &built_ssh, &pass_command, &command])
-                        .output()
-                        .unwrap()
-                };
-
-                // Just for debug the installation
-                // println!("{:?}", install);
-
-                match install.status.code() {
-                    Some(0) => println!(
-                        "{} succesfully processed on {}",
-                        package.name.green(),
-                        conn.name.green()
-                    ),
-                    _ => println!("{} failed on {}", package.name.red(), conn.name.red()),
                 }
             }
         }
@@ -380,6 +459,14 @@ impl Connection {
                     None => String::new(),
                 };
 
+                let labels = match connection_yaml["labels"].as_sequence() {
+                    Some(labels_yaml) => labels_yaml
+                        .iter()
+                        .map(|label| label.as_str().unwrap_or_default().to_string())
+                        .collect(),
+                    None => Vec::new(),
+                };
+
                 let connection = Connection {
                     name,
                     username,
@@ -389,6 +476,7 @@ impl Connection {
                     os: "Unknown".trim().to_string(),
                     sudo_password,
                     pem,
+                    labels,
                 };
 
                 connections.push(connection);

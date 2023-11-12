@@ -4,6 +4,9 @@
   sudo: true
   sudo_password: holamundo
   pem: ./pem/pemname.pem
+  labels:
+    - prueba
+
 
 - name: illo
   username: hola
@@ -11,3 +14,6 @@
   sudo: true
   sudo_password: heeeeey
   pem: ./pem/pemname.pem
+  labels:
+    - tree
+

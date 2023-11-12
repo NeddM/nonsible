@@ -10,16 +10,16 @@ use task::Task;
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    if args.contains(&"-h".to_string()) || args.contains(&"help".to_string()) {
+    if args.contains(&"-h".to_string()) || args.contains(&"--help".to_string()) {
         help_argument();
-    } else if args.len() == 3 {
+    } else if args.len() >= 3 {
         let mut connections: Vec<Connection> = Connection::read_target(args[1].to_string());
         Connection::test_connection(&mut connections);
         Connection::list_connection(&mut connections);
         let mut tasks: Vec<Task> = Task::read_tasks(args[2].to_string());
         Task::list_task(&mut tasks);
 
-        Connection::install_package_no_tty(&mut connections, &mut tasks);
+        Connection::install_package_no_tty(&mut connections, &mut tasks, &args);
     } else if args.len() == 2 {
         let stdin = io::stdin();
         println!("This reads the args");
@@ -51,7 +51,7 @@ fn main() {
                 println!("Type the task YAML file name:");
                 let _ = stdin.read_line(&mut yaml_task_name);
                 let mut tasks: Vec<Task> = Task::read_tasks(yaml_task_name.trim().to_string());
-                Connection::install_package_no_tty(&mut connections, &mut tasks);
+                Connection::install_package_no_tty(&mut connections, &mut tasks, &args);
             } else if option_menu.trim() == "0".to_string() {
                 println!("Exiting...");
                 break;
@@ -94,7 +94,7 @@ fn main() {
                 println!("Type the task YAML file name:");
                 let _ = stdin.read_line(&mut yaml_task_name);
                 let mut tasks: Vec<Task> = Task::read_tasks(yaml_task_name.trim().to_string());
-                Connection::install_package_no_tty(&mut connections, &mut tasks);
+                Connection::install_package_no_tty(&mut connections, &mut tasks, &args);
             } else if option_menu.trim() == "0".to_string() {
                 println!("Exiting...");
                 break;
@@ -107,16 +107,20 @@ fn help_argument() {
     println!("- - - -  NONSIBLE HELP - - - -");
     println!("There are 3 ways to use Nonsible: ");
     println!(" ");
-    println!("With no arguments (0):");
+    println!("With no arguments:");
     println!("This will open a menu, where you can add manually the targets, and install or remove packages");
     println!(" ");
-    println!("With one argument (1):");
+    println!("With one argument:");
     println!("The argument will be a YAML file, that will have all the necesary data in arrays. In this repo exists one file called 'example-hosts.yaml' that is a good example.");
     println!("The connections will be scanned directly, and you will see a menu to install and remove packages");
     println!("E.g: nonsible example-hosts.yaml");
     println!(" ");
-    println!("With two arguments (2):");
+    println!("With two arguments or more:");
     println!("Ideal to run on a pipeline (Github Actions, Azure DevOps, etc...)");
-    println!("The first argument will be the target YAML file, and the second argument is the list of jobs that they have to do");
-    println!("E.g: nonsible example-hosts.yaml workflow");
+    println!("The first argument will be the target YAML file, and the second argument is the list of jobs that they have to do \n");
+    println!("E.g: nonsible example-hosts.yaml workflow \n");
+    println!("Some additional arguments:");
+    println!("--force: Runs Nonsible even if a connection is failed. The failed connection's tasks wont be executed.");
+    println!("--continueonerror: Runs Nonsible even if a connection is failed, and executes every task on failed connections too.");
+    println!("--no-color: Print information about the tasks, CAREFUL! This argument maybe print sensible data.");
 }

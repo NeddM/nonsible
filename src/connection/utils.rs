@@ -73,3 +73,17 @@ pub fn copy_to_remote(username: String, ip: String, file_path: String, pem: Stri
     let command = "-i ".to_string() + &pem + " " + &file_path + " " + &username + "@" + &ip + ":";
     command
 }
+
+pub fn representing_labels_as_string(vector: Vec<String>) -> String {
+    let mut result = String::new();
+
+    for (index, item) in vector.iter().enumerate() {
+        result.push_str(item);
+
+        if index < vector.len() - 1 {
+            result.push_str(", ");
+        }
+    }
+
+    result
+}
