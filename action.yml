@@ -1,5 +1,5 @@
-name: 'Executing Nonsible'
-description: 'Custom action that executes Nonsible'
+name: 'Run Nonsible'
+description: 'Custom action that runs Nonsible'
 
 inputs:
   targetYAML:
