@@ -8,7 +8,7 @@
 
 # English
 
-NonsiblCon etiqueta alternative to Ansible. It is open source and developed in **Rust**. The idea is not to depend on factors like Python, as it commits us to having Python installed on all of our machines, among other requirements.
+Nonsible is an alternative to Ansible. It is open source and developed in **Rust**. The idea is not to depend on factors like Python, as it commits us to having Python installed on all of our machines, among other requirements.
 
 On several occasions, I have encountered the problem that I couldn't install _pip_, and I had to resort to using _pip3_ or even _python3 -m_. This seems very unintuitive to me; every time I install Ansible, I have to do a different workaround.
 
@@ -132,10 +132,10 @@ If you set a matchlabel to a task, the task only will be executed by a connectio
 This allow you to filtering the execution of tasks.
 
 ## Additional arguments
---help or -h: Print inline help.
---force: Runs Nonsible even if a connection is failed. The failed connection's tasks wont be executed.
---continueonerror: Runs Nonsible even if a connection is failed, and executes every task on failed connections too.
---no-color: Print information about the tasks, CAREFUL! This argument maybe print sensible data.
+- --help or -h: Print inline help.
+- --force: Runs Nonsible even if a connection is failed. The failed connection's tasks wont be executed.
+- --continueonerror: Runs Nonsible even if a connection is failed, and executes every task on failed connections too.
+- --no-color: Print information about the tasks, CAREFUL! This argument maybe print sensible data.
 
 I will soon provide documentation with all the types of tasks that can be performed, and we will implement more tasks that I believe are necessary.
 
@@ -267,9 +267,9 @@ Si configuras una tarea con una matchlabel, esta tarea sólo será ejecutada por
 Esto te permite filtrar la ejecución de algunas tareas en algunas conexiones.
 
 ## Additional arguments
---help or -h: Imprime la ayuda en pantalla.
---force: Ejecuta Nonsible incluso de una conexión ha fallado. Las tareas de las conexiones fallidas no serán ejecutadas.
---continueonerror: Ejecuta Nonsible incluso si la conexión ha fallado, y tamibén ejecuta todas las tareas de esa conexión fallida.
---no-color: Imprime por pantalla información adicional sobre las tareas. ¡CUIDADO! Este argumento puede que imprima información sensible.
+- --help or -h: Imprime la ayuda en pantalla.
+- --force: Ejecuta Nonsible incluso de una conexión ha fallado. Las tareas de las conexiones fallidas no serán ejecutadas.
+- --continueonerror: Ejecuta Nonsible incluso si la conexión ha fallado, y tamibén ejecuta todas las tareas de esa conexión fallida.
+- --no-color: Imprime por pantalla información adicional sobre las tareas. ¡CUIDADO! Este argumento puede que imprima información sensible.
 
 Pronto dejaré lista una documentación con todos los tipos de tareas que se pueden realizar, e implementaremos más tareas que yo pienso que son necesarias.

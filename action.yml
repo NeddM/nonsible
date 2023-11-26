@@ -1,0 +1,49 @@
+name: 'Executing Nonsible'
+description: 'Custom action that executes Nonsible'
+
+inputs:
+  targetYAML:
+    description: 'The YAML file that contains the connections data.'
+    required: true
+  taskYAML:
+    description: 'The YAML file that contains the tasks to run.'
+    required: true
+  force:
+    description: 'Runs Nonsible even if a connection is failed.'
+    required: false
+  continueonerror:
+    description: "Runs Nonsible even if a connection failed, and executes every task on failed connections too."
+    required: false
+  nocolor:
+    description: 'Print more information about the tasks, but could print some sensible data.'
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Log check
+      shell: bash
+      run: echo "Executing the Nonsible custom action"
+
+    - name: Setting up arguments
+      id: setup_args
+      shell: bash
+      run: |
+        args=""
+
+        if [ "${{ inputs.force }}" != false ]; then
+          args+=" --force"
+        fi
+        if [ "${{ inputs.continueonerror }}" != false ]; then
+          args+=" --continueonerror"
+        fi
+        if [ "${{ inputs.nocolor }}" != false ]; then
+          args+=" --no-color"
+        fi
+
+        echo "setup_args=$args" >> $GITHUB_OUTPUT
+        echo $GITHUB_OUTPUT
+
+    - name: Run the aplication
+      shell: bash
+      run: cargo run ${{ inputs.targetYAML }} ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
+

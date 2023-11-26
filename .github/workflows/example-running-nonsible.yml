@@ -1,0 +1,24 @@
+run-name: Example running Nonsible
+name: Example running Nonsible
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v3
+
+    - name: Configurar entorno
+      uses: NeddM/nonsible-testing@v5-test
+      with:
+        # Required arguments
+        targetYAML: ./examples/testing-labels.yaml
+        taskYAML: ./examples/apache-tasks.yaml
+        # The arguments bellow are optional
+        continueonerror: true
+        force: true
+        nocolor: false
