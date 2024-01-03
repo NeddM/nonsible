@@ -1,5 +1,5 @@
-name: 'Run Nonsible'
-description: 'Custom action that runs Nonsible'
+name: 'Executing Nonsible'
+description: 'Custom action that executes Nonsible'
 
 inputs:
   targetYAML:
@@ -20,6 +20,9 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Checkout del código
+      uses: actions/checkout@v3
+
     - name: Log check
       shell: bash
       run: echo "Executing the Nonsible custom action"
@@ -43,7 +46,16 @@ runs:
         echo "setup_args=$args" >> $GITHUB_OUTPUT
         echo $GITHUB_OUTPUT
 
+    - uses: robinraju/release-downloader@v1.8
+      with:
+        repository: "NeddM/nonsible"
+        latest: true
+        fileName: "nonsible"
+    
+    - name: chmod
+      shell: bash
+      run: chmod 777 nonsible
+
     - name: Run the aplication
       shell: bash
-      run: cargo run ${{ inputs.targetYAML }} ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
-
+      run: ./nonsible ${{ inputs.targetYAML }} ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}

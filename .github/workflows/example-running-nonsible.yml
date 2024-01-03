@@ -1,5 +1,5 @@
-run-name: Example running Nonsible
-name: Example running Nonsible
+run-name: Example executing Nonsible
+name: Example executing Nonsible
 
 on:
   workflow_dispatch:
@@ -13,12 +13,12 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Configurar entorno
-      uses: NeddM/nonsible@v0.3
+      uses: NeddM/nonsible@v0.1
       with:
         # Required arguments
         targetYAML: ./examples/testing-labels.yaml
         taskYAML: ./examples/apache-tasks.yaml
         # The arguments bellow are optional
-        continueonerror: true
-        force: true
-        nocolor: false
+        continueonerror: false
+        force: false
+        nocolor: true
