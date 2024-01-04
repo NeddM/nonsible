@@ -139,6 +139,37 @@ This allow you to filtering the execution of tasks.
 
 I will soon provide documentation with all the types of tasks that can be performed, and we will implement more tasks that I believe are necessary.
 
+## Github Action
+
+Nonsible can also be executed through a Github Actions workflow. Here we have an execution example, where I have all the YAML files (the targets file and the tasks file) in a repository, along with the SSH keys.
+
+It's important to change the permissions of the SSH keys using `chmod 400`, as shown in the example.
+
+```
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v3
+
+    - name: Chmod the keys
+      run: |
+        chmod 400 ./pem/piensa
+        chmod 400 ./pem/raspi
+
+    - name: Execute Nonsible
+      uses: NeddM/nonsible@v0.1
+      with:
+        # Required arguments
+        targetYAML: targets/targets1.yaml
+        taskYAML: tasks/tasks1.yaml
+        # The arguments bellow are optional
+        continueonerror: false
+        force: true
+        nocolor: false
+```
+
 ---
 
 # Español
@@ -171,15 +202,15 @@ Los tipos de uso son _completamente interactiva_, _semi interactiva_ y _desatend
 -   Semi-Interactiva (Con un argumento):
     El argumento que añadimos será un archivo YAML de targets (conexiones).
 
-La idea es cargar varias conexiones, ya que puede ser la tarea más tediosa de realizar, y a partir de ahí ya podemos instalar de manera imperativa o declarativa.
+    La idea es cargar varias conexiones, ya que puede ser la tarea más tediosa de realizar, y a partir de ahí ya podemos instalar de manera imperativa o declarativa.
 
-Es interesante porque podemos ver en la tabla las conexiones agregadas y sus detalles, ideal para comprobar si todos los datos están como deseamos.
+    Es interesante porque podemos ver en la tabla las conexiones agregadas y sus detalles, ideal para comprobar si todos los datos están como deseamos.
 
 -   Desatendida (Con dos argumentos):
     Es la metodología perfecta para crear una automatización en un pipeline de CICD.
     El primer argumento sería un archvio YAML de targets (conexiones), y el segundo sería el archivo YAML de tareas.
 
-Esta manera de usar el script se encargará de realizar el test de sistema operativo, y de seguir paso a paso todas las tareas que se le indiquen en el YAML de tareas.
+    Esta manera de usar el script se encargará de realizar el test de sistema operativo, y de seguir paso a paso todas las tareas que se le indiquen en el YAML de tareas.
 
 ## Ejemplos de YAMLs.
 
@@ -266,10 +297,40 @@ Esta manera de usar el script se encargará de realizar el test de sistema opera
 Si configuras una tarea con una matchlabel, esta tarea sólo será ejecutada por una conexión que tenga la misma etiqueta.
 Esto te permite filtrar la ejecución de algunas tareas en algunas conexiones.
 
-## Additional arguments
+## Argumentos adicionales
 - --help or -h: Imprime la ayuda en pantalla.
 - --force: Ejecuta Nonsible incluso de una conexión ha fallado. Las tareas de las conexiones fallidas no serán ejecutadas.
 - --continueonerror: Ejecuta Nonsible incluso si la conexión ha fallado, y tamibén ejecuta todas las tareas de esa conexión fallida.
 - --no-color: Imprime por pantalla información adicional sobre las tareas. ¡CUIDADO! Este argumento puede que imprima información sensible.
 
 Pronto dejaré lista una documentación con todos los tipos de tareas que se pueden realizar, e implementaremos más tareas que yo pienso que son necesarias.
+
+## Github Action
+Nonsible también se puede ejecutar a través un workflow de Github Actions. Aquí tenemos un ejemplo de ejecución, en el que tengo en un repositorio todos los archivos YAML (El archivo de targets y el de tasks), y también las claves SSH.
+
+Es importante que cambiemos los permisos de las claves SSH, con un `chmod 400` como podemos ver en el ejemplo.
+
+```
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v3
+
+    - name: Chmod the keys
+      run: |
+        chmod 400 ./pem/piensa
+        chmod 400 ./pem/raspi
+
+    - name: Execute Nonsible
+      uses: NeddM/nonsible@v0.1
+      with:
+        # Required arguments
+        targetYAML: targets/targets1.yaml
+        taskYAML: tasks/tasks1.yaml
+        # The arguments bellow are optional
+        continueonerror: false
+        force: true
+        nocolor: false
+```

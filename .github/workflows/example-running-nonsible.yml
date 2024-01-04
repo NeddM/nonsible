@@ -9,16 +9,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout del código
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Configurar entorno
+    - name: Chmod the keys
+      run: |
+        chmod 400 ./pem/piensa
+        chmod 400 ./pem/raspi
+
+    - name: Nonsible
       uses: NeddM/nonsible@v0.1
       with:
         # Required arguments
         targetYAML: ./examples/testing-labels.yaml
         taskYAML: ./examples/apache-tasks.yaml
-        # The arguments bellow are optional
+        # Optional arguments
         continueonerror: false
         force: false
         nocolor: true
