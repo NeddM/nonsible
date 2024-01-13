@@ -62,11 +62,11 @@ runs:
         latest: true
         fileName: "nonsible"
 
-    - uses: robinraju/release-downloader@v1.8
-      with:
-        repository: "NeddM/nonsible"
-        tag: "v0.1"
-        fileName: "nonsible"
+    # - uses: robinraju/release-downloader@v1.8
+    #   with:
+    #     repository: "NeddM/nonsible"
+    #     tag: "v0.1"
+    #     fileName: "nonsible"
     
     - name: chmod
       shell: bash
