@@ -82,7 +82,7 @@ runs:
       run: |
         echo "Run Nonsible"
 
-        if [ "${{ inputs.targetAsSecret }}" == true ]; then
+        if [ "${{ input.targetAsSecret }}" == true ]; then
           echo '${{ input.targetYAML }}' | base64 --decode > nonsibleTargetAsSecret.yaml
           # ESCAPED_YAML=$(echo "${{ inputs.targetYAML }}" | base64 --decode)
           # echo "$ESCAPED_YAML" > nonsibleTargetAsSecret.yaml
