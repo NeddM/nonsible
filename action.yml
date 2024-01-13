@@ -23,12 +23,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout del código
-      uses: actions/checkout@v3
-
     - name: Clear repository
       shell: bash
       run: sudo rm -fr $GITHUB_WORKSPACE && mkdir $GITHUB_WORKSPACE
+
+    - name: Checkout del código
+      uses: actions/checkout@v3
 
     - name: Log check
       shell: bash
