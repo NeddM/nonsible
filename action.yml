@@ -57,16 +57,12 @@ runs:
     - uses: robinraju/release-downloader@v1.8
       with:
         repository: "NeddM/nonsible"
-        tag: v0.2
+        latest: true
         fileName: "nonsible"
     
     - name: chmod
       shell: bash
       run: chmod 777 nonsible
-
-    - name: testing
-      shell: bash
-      run: cat ./nonsibleTargetAsSecret.yaml
 
     - name: Run Nonsible
       shell: bash
