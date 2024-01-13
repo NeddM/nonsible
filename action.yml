@@ -35,7 +35,7 @@ runs:
       run: | 
         echo "Check if the input is added as a Github secret"
         if [[ "${{ inputs.targetAsSecret }}" == true ]]; then
-          echo ${{ inputs.targetAsSecret }} > ./nonsibleTargetAsSecret.yaml
+          echo ${{ inputs.targetYAML }} > ./nonsibleTargetAsSecret.yaml
         fi
 
     - name: Setting up arguments
