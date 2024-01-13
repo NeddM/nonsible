@@ -54,12 +54,12 @@ runs:
         echo "setup_args=$args" >> $GITHUB_OUTPUT
         echo $GITHUB_OUTPUT
 
-    - uses: robinraju/release-downloader@v1.8
-      continue-on-error: true
-      with:
-        repository: "NeddM/nonsible"
-        latest: true
-        fileName: "nonsible"
+    # - uses: robinraju/release-downloader@v1.8
+    #   continue-on-error: true
+    #   with:
+    #     repository: "NeddM/nonsible"
+    #     latest: true
+    #     fileName: "nonsible"
 
     - name: Download Nonsible from release
       shell: bash
