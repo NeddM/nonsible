@@ -34,14 +34,6 @@ runs:
       shell: bash
       run: echo "Executing the Nonsible custom action"
 
-    - name: Setting up Targets as a secret
-      shell: bash
-      run: | 
-        echo "Check if the input is added as a Github secret"
-        if [ "${{ inputs.targetAsSecret }}" == true ]; then
-          echo "${{ inputs.targetYAML }}" >> nonsibleTargetAsSecret.yaml
-        fi
-
     - name: Setting up arguments
       id: setup_args
       shell: bash
@@ -72,13 +64,18 @@ runs:
       shell: bash
       run: chmod 777 nonsible
 
+    - name: testing
+      shell: bash
+      run: cat ./nonsibleTargetAsSecret.yaml
+
     - name: Run Nonsible
       shell: bash
       run: |
         echo "Run Nonsible"
 
-        if [ "${{ inputs.targetAsSecret }}" == true ]; then
-          ./nonsible nonsibleTargetAsSecret.yaml ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
+        if [ "${{ input.targetAsSecret }}" == true ]; then
+          echo "${{ input.targetYAML }}" | base64 --decode > nonsibleTargetAsSecret.yaml
+          ./nonsible ./nonsibleTargetAsSecret.yaml ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
         else
           ./nonsible ${{ inputs.targetYAML }} ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
         fi
