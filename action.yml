@@ -65,7 +65,7 @@ runs:
     - uses: robinraju/release-downloader@v1.8
       with:
         repository: "NeddM/nonsible"
-        tag: "v0.2"
+        tag: "v0.3"
         fileName: "nonsible"
     
     - name: chmod
@@ -75,7 +75,6 @@ runs:
     - name: Run the aplication
       shell: bash
       run: |
-        cat ./nonsibleTargetAsSecret.yaml
         if [ "${{ inputs.targetAsSecret }}" == true ]; then
           ./nonsible ./nonsibleTargetAsSecret.yaml ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
         else
