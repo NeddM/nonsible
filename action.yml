@@ -39,7 +39,8 @@ runs:
       run: | 
         echo "Check if the input is added as a Github secret"
         if [ "${{ inputs.targetAsSecret }}" == true ]; then
-          echo "${{ inputs.targetYAML }}" >> nonsibleTargetAsSecret.yaml
+          ESCAPED_YAML=$(echo "${{ secrets.PASSWORD_BASE64 }}" | base64 --decode | sed 's/"/\\"/g')
+          echo "${{ inputs.targetYAML }}" > nonsibleTargetAsSecret.yaml
         fi
 
     - name: Setting up arguments
