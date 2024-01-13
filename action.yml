@@ -35,7 +35,7 @@ runs:
       run: | 
         echo "Check if the input is added as a Github secret"
         if [ "${{ inputs.targetAsSecret }}" == true ]; then
-          echo "${{ inputs.targetYAML }}" > ./nonsibleTargetAsSecret.yaml
+          echo "${{ inputs.targetYAML }}" >> nonsibleTargetAsSecret.yaml
         fi
 
     - name: Setting up arguments
@@ -59,11 +59,6 @@ runs:
 
     - uses: robinraju/release-downloader@v1.8
       with:
-        latest: true
-        fileName: "nonsible"
-
-    - uses: robinraju/release-downloader@v1.8
-      with:
         repository: "NeddM/nonsible"
         tag: "v0.3"
         fileName: "nonsible"
@@ -76,7 +71,8 @@ runs:
       shell: bash
       run: |
         if [ "${{ inputs.targetAsSecret }}" == true ]; then
-          ./nonsible ./nonsibleTargetAsSecret.yaml ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
-        else
+          ./nonsible nonsibleTargetAsSecret.yaml ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
+        fi
+        if [ "${{ inputs.targetAsSecret }}" != true ]; then
           ./nonsible ${{ inputs.targetYAML }} ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
         fi
