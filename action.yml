@@ -83,7 +83,7 @@ runs:
         echo "Run Nonsible"
 
         if [ "${{ inputs.targetAsSecret }}" == true ]; then
-          ESCAPED_YAML=$(echo "${{ inputs.targetYAML }}" | base64 --decode | sed 's/"/\\"/g')
+          ESCAPED_YAML=$(echo "${{ inputs.targetYAML }}" | base64 --decode)
           echo "$ESCAPED_YAML" > nonsibleTargetAsSecret.yaml
           cat nonsibleTargetAsSecret.yaml
           ./nonsible ./nonsibleTargetAsSecret.yaml ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
