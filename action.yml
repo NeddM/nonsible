@@ -2,8 +2,11 @@ name: 'Executing Nonsible'
 description: 'Custom action that executes Nonsible'
 
 inputs:
+  targetAsSecret:
+    description: 'Mark true if you want to run the targets as a Github secret.'
+    required: true
   targetYAML:
-    description: 'The YAML file that contains the connections data.'
+    description: 'The YAML file or Github secret that contains the connections data.'
     required: true
   taskYAML:
     description: 'The YAML file that contains the tasks to run.'
@@ -27,6 +30,14 @@ runs:
       shell: bash
       run: echo "Executing the Nonsible custom action"
 
+    - name: Setting up Targets as a secret
+      shell: bash
+      run: | 
+        echo "Check if the input is added as a Github secret"
+        if [[ "${{ inputs.targetAsSecret }}" != false ]]; then
+          echo ${{ inputs.targetAsSecret }} > ./nonsibleTargetAsSecret.yaml
+        fi
+
     - name: Setting up arguments
       id: setup_args
       shell: bash
@@ -48,8 +59,13 @@ runs:
 
     - uses: robinraju/release-downloader@v1.8
       with:
-        repository: "NeddM/nonsible"
         latest: true
+        fileName: "nonsible"
+
+    - uses: robinraju/release-downloader@v1.8
+      with:
+        repository: "NeddM/nonsible-testing"
+        tag: "v0.1"
         fileName: "nonsible"
     
     - name: chmod
@@ -58,4 +74,9 @@ runs:
 
     - name: Run the aplication
       shell: bash
-      run: ./nonsible ${{ inputs.targetYAML }} ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
+      run: |
+        if [[ "${{ inputs.targetAsSecret }}" != false ]]; then
+          ./nonsible ./nonsibleTargetAsSecret.yaml ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
+        else
+          ./nonsible ${{ inputs.targetYAML }} ${{ inputs.taskYAML }} ${{ steps.setup_args.outputs.setup_args }}
+        fi
