@@ -80,8 +80,8 @@ runs:
         echo "Run Nonsible"
 
         if [ "${{ inputs.targetAsSecret }}" == true ]; then
-          cat << EOF > ./nonsibleTargetAsSecret.yaml
-          ${{ inputs.targetYAML }}
+          cat <<-EOF > ./nonsibleTargetAsSecret.yaml
+            ${{ inputs.targetYAML }}
           EOF
           echo ${{ inputs.targetYAML }} | base64 --decode > ./nonsibleTargetAsSecret.yaml
           cat ./nonsibleTargetAsSecret.yaml
