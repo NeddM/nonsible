@@ -1,4 +1,4 @@
-```
+```bash
             __                    _  _      _
          /\ \ \ ___   _ __   ___ (_)| |__  | |  ___
  _____  /  \/ // _ \ | '_ \ / __|| || '_ \ | | / _ \ _____
@@ -30,26 +30,15 @@ On several occasions, I have encountered the problem that I couldn't install _pi
 
 Usage types are _completely interactive_, _semi-interactive_, and _unattended_.
 
--   **Interactive** (Without any arguments):
-    In the interactive way, we need to manually add the connections, although we can open a YAML file of tasks. This way of running Nonsible is very useful when the task you need to perform is simple or occasional.
+-   **Interactive** (Without any arguments): In the interactive way, we need to manually add the connections, although we can open a YAML file of tasks. This way of running Nonsible is very useful when the task you need to perform is simple or occasional.
 
--   **Semi-Interactive** (With one argument):
-    The argument we add will be a YAML file of targets (connections).
+-   **Semi-Interactive** (With one argument): The argument we add will be a YAML file of targets (connections). The idea is to load multiple connections, as it can be the most tedious task to perform, and from there, we can install either imperatively or declaratively. It's interesting because we can see in the table the added connections and their details, ideal for checking if all the data is as desired.
 
-    The idea is to load multiple connections, as it can be the most tedious task to perform, and from there, we can install either imperatively or declaratively.
-
-    It's interesting because we can see in the table the added connections and their details, ideal for checking if all the data is as desired.
-
--   **Unattended** (With two or more arguments):
-    It is the perfect methodology for creating automation in a CI/CD pipeline.
-    The first argument would be a YAML file of targets (connections), and the second would be the YAML file of tasks.
-
-    This way of using the script will take care of performing the operating system test and following step by step all the tasks indicated in the YAML file of tasks.
+-   **Unattended** (With two or more arguments): It is the perfect methodology for creating automation in a CI/CD pipeline. The first argument would be a YAML file of targets (connections), and the second would be the YAML file of tasks. This way of using the script will take care of performing the operating system test and following step by step all the tasks indicated in the YAML file of tasks.
 
 ## YAML examples
 
--   Target YAML:
-    In this YAML we are going to write our connections data as an array.
+-   Target YAML: In this YAML we are going to write our connections data as an array.
 
 ```yaml
 # Without label
@@ -71,8 +60,7 @@ Usage types are _completely interactive_, _semi-interactive_, and _unattended_.
     - tree
 ```
 
--   Tasks YAML:
-    In this YAML we define the tasks as an array.
+-   Tasks YAML: In this YAML we define the tasks as an array.
 
 ```yaml
 # Install a package, introducing it's name
@@ -145,7 +133,7 @@ Nonsible can also be executed through a Github Actions workflow. Here we have an
 
 It's important to change the permissions of the SSH keys using `chmod 400`, as shown in the example.
 
-```
+```yaml
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -196,26 +184,14 @@ En varias ocasiones me he encontrado con el problema de que no podía instalar _
 
 Los tipos de uso son _completamente interactiva_, _semi interactiva_ y _desatendida_.
 
--   Interactiva (Sin ningún argumento):
-    En la manera interactiva tenemos que añadir nosotros las conexiones manualmente, aunque sí que podemos abrir un archivo YAML de tareas. Esta manera de ejecutar el Nonsible es muy útil cuando la tarea que tienes que realizar es sencilla o puntual.
+- Interactiva (Sin ningún argumento): En la manera interactiva tenemos que añadir nosotros las conexiones manualmente, aunque sí que podemos abrir un archivo YAML de tareas. Esta manera de ejecutar el Nonsible es muy útil cuando la tarea que tienes que realizar es sencilla o puntual.
 
--   Semi-Interactiva (Con un argumento):
-    El argumento que añadimos será un archivo YAML de targets (conexiones).
+- Semi-Interactiva (Con un argumento): El argumento que añadimos será un archivo YAML de targets (conexiones). La idea es cargar varias conexiones, ya que puede ser la tarea más tediosa de realizar, y a partir de ahí ya podemos instalar de manera imperativa o declarativa. Es interesante porque podemos ver en la tabla las conexiones agregadas y sus detalles, ideal para comprobar si todos los datos están como deseamos.
 
-    La idea es cargar varias conexiones, ya que puede ser la tarea más tediosa de realizar, y a partir de ahí ya podemos instalar de manera imperativa o declarativa.
-
-    Es interesante porque podemos ver en la tabla las conexiones agregadas y sus detalles, ideal para comprobar si todos los datos están como deseamos.
-
--   Desatendida (Con dos argumentos):
-    Es la metodología perfecta para crear una automatización en un pipeline de CICD.
-    El primer argumento sería un archvio YAML de targets (conexiones), y el segundo sería el archivo YAML de tareas.
-
-    Esta manera de usar el script se encargará de realizar el test de sistema operativo, y de seguir paso a paso todas las tareas que se le indiquen en el YAML de tareas.
+- Desatendida (Con dos argumentos): Es la metodología perfecta para crear una automatización en un pipeline de CICD. El primer argumento sería un archvio YAML de targets (conexiones), y el segundo sería el archivo YAML de tareas. Esta manera de usar el script se encargará de realizar el test de sistema operativo, y de seguir paso a paso todas las tareas que se le indiquen en el YAML de tareas.
 
 ## Ejemplos de YAMLs.
-
--   Target YAML (conexiones):
-    En este YAML vamos a definir los datos de nuestras conexiones. La idea es definirlos a modo de array.
+- Target YAML (conexiones): En este YAML vamos a definir los datos de nuestras conexiones. La idea es definirlos a modo de array.
 
 ```yaml
 # Sin etiqueta
@@ -237,8 +213,7 @@ Los tipos de uso son _completamente interactiva_, _semi interactiva_ y _desatend
     - tree
 ```
 
--   Tasks YAML (tareas):
-    Definimos las tareas que queremos realizar, en el orden deseado. Hay que definir las tareas a modo de array.
+- Tasks YAML (tareas): Definimos las tareas que queremos realizar, en el orden deseado. Hay que definir las tareas a modo de array.
 
 ```yaml
 # Instala un paquete, introduciendo su nombre
@@ -310,7 +285,7 @@ Nonsible también se puede ejecutar a través un workflow de Github Actions. Aqu
 
 Es importante que cambiemos los permisos de las claves SSH, con un `chmod 400` como podemos ver en el ejemplo.
 
-```
+```yaml
 jobs:
   build:
     runs-on: ubuntu-latest
