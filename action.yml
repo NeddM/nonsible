@@ -63,10 +63,18 @@ runs:
     - name: chmod ssh-keys
       shell: bash
       run: |
-        yq eval '.[].pem' "${{ inputs.targetYAML }}" | while read -r pem; do
-        echo "Valor de pem: $pem"
-        chmod 600 $pem
-        done
+        if [ "${{ inputs.targetAsSecret }}" == true ]; then
+          echo "${{ inputs.targetYAML }}" | base64 --decode > sshkeys.yaml
+          yq eval '.[].pem' sshkeys.yaml | while read -r pem; do
+          echo "Valor de pem: $pem"
+          chmod 600 $pem
+          done
+        else
+          yq eval '.[].pem' "${{ inputs.targetYAML }}" | while read -r pem; do
+          echo "Valor de pem: $pem"
+          chmod 600 $pem
+          done
+        fi
 
     - name: chmod nonsible
       shell: bash
