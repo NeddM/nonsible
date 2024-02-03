@@ -59,8 +59,16 @@ runs:
         repository: "NeddM/nonsible"
         latest: true
         fileName: "nonsible"
-    
-    - name: chmod
+
+    - name: chmod ssh-keys
+      shell: bash
+      run: |
+        yq eval '.[].pem' "${{ inputs.targetYAML }}" | while read -r pem; do
+        echo "Valor de pem: $pem"
+        chmod 600 $pem
+        done
+
+    - name: chmod nonsible
       shell: bash
       run: chmod 777 nonsible
 
