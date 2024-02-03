@@ -18,7 +18,7 @@ jobs:
         chmod 400 ./pem/raspi
 
     - name: Nonsible
-      uses: NeddM/nonsible@v0.2
+      uses: NeddM/nonsible@v1
       with:
         # Required arguments
         targetAsSecret: false
