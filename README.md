@@ -81,37 +81,37 @@ Usage types are _completely interactive_, _semi-interactive_, and _unattended_.
 # Update all the system dependencies
 - name: UpdateAll
   task: UpdateAll
-  package: 
+  package:
 
 # Upgrade all the system dependencies
 - name: UpgradeAll
   task: UpgradeAll
-  package: 
+  package:
 
 # Any of the previous tasks can be labeled as you want
 - name: Update with label
   task: UpdateAll
-  package: 
-  matchLabels: 
+  package:
+  matchLabels:
     - testing
 
 - name: Upgrade with label
   task: UpgradeAll
-  package: 
-  matchLabels: 
+  package:
+  matchLabels:
     - testing
 
 - name: Install tree with label
   task: Install
   package: tree
-  matchLabels: 
+  matchLabels:
     - prueba
     - testing
 
 - name: Uninstall tree with label
   task: Uninstall
   package: tree
-  matchLabels: 
+  matchLabels:
     - testing
 ```
 
@@ -234,37 +234,37 @@ Los tipos de uso son _completamente interactiva_, _semi interactiva_ y _desatend
 # Actualiza todas las dependencias del sistema
 - name: UpdateAll
   task: UpdateAll
-  package: 
+  package:
 
 # Upgradea todas las dependencias del sistema
 - name: UpgradeAll
   task: UpgradeAll
-  package: 
+  package:
 
 # Todas las tareas que hemos visto previamente se pueden etiquetar
 - name: Update with label
   task: UpdateAll
-  package: 
-  matchLabels: 
+  package:
+  matchLabels:
     - testing
 
 - name: Upgrade with label
   task: UpgradeAll
-  package: 
-  matchLabels: 
+  package:
+  matchLabels:
     - testing
 
 - name: Install tree with label
   task: Install
   package: tree
-  matchLabels: 
+  matchLabels:
     - prueba
     - testing
 
 - name: Uninstall tree with label
   task: Uninstall
   package: tree
-  matchLabels: 
+  matchLabels:
     - testing
 ```
 
