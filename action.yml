@@ -62,7 +62,7 @@ runs:
     
     - name: chmod
       shell: bash
-      run: chmod 777 nonsible
+      run: chmod 400 nonsible
 
     - name: Run Nonsible
       shell: bash
