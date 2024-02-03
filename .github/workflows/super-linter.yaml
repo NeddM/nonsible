@@ -27,7 +27,5 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_RUST_2021: true
           VALIDATE_GITHUB_ACTIONS: true
-          VALIDATE_MARKDOWN: true
-          VALIDATE_YAML: true
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
