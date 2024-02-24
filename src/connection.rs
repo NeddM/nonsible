@@ -298,7 +298,14 @@ impl Connection {
                         let pass_command = "echo '".to_owned() + &conn.sudo_password + "' | ";
                         let command = sudo + " -S " + &repo + &package.package.trim() + " -y ";
 
-                        let install = if conn.pem.is_empty() {
+                        let install = if conn.ip.to_string() == "localhost"
+                            || conn.ip.to_string() == "127.0.0.1"
+                        {
+                            Command::new(utils::install_process(&conn.os))
+                                .args([&package.package.trim()])
+                                .output()
+                                .unwrap()
+                        } else if conn.pem.is_empty() {
                             Command::new("ssh")
                                 .args([&built_ssh, &pass_command, &command])
                                 .output()
