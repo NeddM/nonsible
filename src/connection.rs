@@ -177,7 +177,6 @@ impl Connection {
                 println!("Connection to {} succeeded", conn.name.green());
                 conn.status = true;
                 conn.os = data_parsed;
-                return;
             } else {
                 match test.status.code() {
                     Some(0) => {
@@ -190,7 +189,7 @@ impl Connection {
                         conn.os = "Connection failed!".to_string();
                     }
                 }
-            };
+            }
         }
     }
 
