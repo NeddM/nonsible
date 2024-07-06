@@ -173,17 +173,24 @@ impl Connection {
 
             let data_parsed = utils::parse_os(String::from_utf8_lossy(&test.stdout).to_string());
 
-            match test.status.code() {
-                Some(0) => {
-                    println!("Connection to {} succeeded", conn.name.green());
-                    conn.status = true;
-                    conn.os = data_parsed;
+            if conn.ip.to_string() == "localhost" || conn.ip.to_string() == "127.0.0.1" {
+                println!("Connection to {} succeeded", conn.name.green());
+                conn.status = true;
+                conn.os = data_parsed;
+                return;
+            } else {
+                match test.status.code() {
+                    Some(0) => {
+                        println!("Connection to {} succeeded", conn.name.green());
+                        conn.status = true;
+                        conn.os = data_parsed;
+                    }
+                    _ => {
+                        println!("Error connecting to {}", conn.name.red());
+                        conn.os = "Connection failed!".to_string();
+                    }
                 }
-                _ => {
-                    println!("Error connecting to {}", conn.name.red());
-                    conn.os = "Connection failed!".to_string();
-                }
-            }
+            };
         }
     }
 
