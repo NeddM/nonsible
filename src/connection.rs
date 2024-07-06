@@ -149,7 +149,7 @@ impl Connection {
             let skip_fingerprint_check = "-o StrictHostKeyChecking=no";
 
             let test = if conn.ip.to_string() == "localhost" || conn.ip.to_string() == "127.0.0.1" {
-                Command::new(os_info).output().unwrap()
+                Command::new("grep").args([&"'^PRETTY_NAME' /etc/os-release"]).output().unwrap()
             } else if conn.pem.is_empty() {
                 Command::new("ssh")
                     .args([&built_ssh, skip_fingerprint_check, os_info])
