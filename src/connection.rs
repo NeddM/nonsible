@@ -150,7 +150,7 @@ impl Connection {
 
             let test = if conn.ip.to_string() == "localhost" || conn.ip.to_string() == "127.0.0.1" {
                 Command::new("grep")
-                    .args(["'^PRETTY_NAME' /etc/os-release"])
+                    .args([&skip_fingerprint_check, "'^PRETTY_NAME' /etc/os-release"])
                     .output()
                     .unwrap()
             } else if conn.pem.is_empty() {
