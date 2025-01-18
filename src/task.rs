@@ -49,7 +49,7 @@ impl Task {
             prettytable::row![cb -> "NAME", cb -> "TASK", cb -> "PACKAGE", cb -> "MATCH LABELS"],
         );
 
-        if tasks.is_empty() {
+        if !tasks.is_empty() {
             for order_task in tasks {
                 table.add_row(Row::new(vec![
                     Cell::new(&order_task.name),

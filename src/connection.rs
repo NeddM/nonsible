@@ -118,7 +118,7 @@ impl Connection {
         table
             .add_row(prettytable::row![cb -> "NAME", cb -> "CONNECTION", cb -> "SUDO", cb -> "OS", cb -> "LABELS"]);
 
-        if connections.len() > 0 {
+        if !connections.is_empty() {
             for conn in connections {
                 let connection = conn.username.clone() + "@" + &conn.ip.to_string();
                 table.add_row(Row::new(vec![
@@ -275,7 +275,6 @@ impl Connection {
                                 conn.ip.to_string(),
                                 package.dst_file.to_string(),
                             );
-                            println!("{}", scp);
 
                             let copy_to_remote = if conn.pem.is_empty() {
                                 Command::new("scp")
