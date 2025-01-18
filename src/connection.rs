@@ -270,14 +270,33 @@ impl Connection {
                         } else if package.task == TaskType::UpgradeAll {
                             utils::upgrade_all_process(&conn.os)
                         } else if package.task == TaskType::CopyToRemote {
-                            let scp = utils::copy_to_remote(
+                            let scp = utils::copy_to_remote_string(
                                 conn.username.to_string(),
                                 conn.ip.to_string(),
-                                package.file.to_string(),
-                                conn.pem.to_string(),
+                                package.dst_file.to_string(),
                             );
                             println!("{}", scp);
-                            let copy_to_remote = Command::new("scp").args([scp]).output().unwrap();
+
+                            let copy_to_remote = if conn.pem.is_empty() {
+                                Command::new("scp")
+                                    .arg("-r")
+                                    .arg(&package.src_file)
+                                    .arg(scp)
+                                    .output()
+                                    .unwrap()
+                            } else {
+                                Command::new("scp")
+                                    .arg("-i")
+                                    .arg(&conn.pem)
+                                    .arg("-r")
+                                    .arg(&package.src_file)
+                                    .arg(scp)
+                                    .output()
+                                    .unwrap()
+                            };
+
+                            // let copy_to_remote = Command::new("scp").arg(scp).output().unwrap();
+
                             match copy_to_remote.status.code() {
                                 Some(0) => println!(
                                     "{} succesfully processed on {}",

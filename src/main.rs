@@ -40,19 +40,19 @@ fn main() {
 
             println!("Option: ");
             let _ = stdin.read_line(&mut option_menu);
-            if option_menu.trim() == "1".to_string() {
+            if option_menu.trim() == "1" {
                 Connection::test_connection(&mut connections);
-            } else if option_menu.trim() == "2".to_string() {
+            } else if option_menu.trim() == "2" {
                 Connection::install_package(&mut connections);
-            } else if option_menu.trim() == "3".to_string() {
+            } else if option_menu.trim() == "3" {
                 Connection::uninstall_package(&mut connections);
-            } else if option_menu.trim() == "4".to_string() {
+            } else if option_menu.trim() == "4" {
                 let mut yaml_task_name = String::new();
                 println!("Type the task YAML file name:");
                 let _ = stdin.read_line(&mut yaml_task_name);
                 let mut tasks: Vec<Task> = Task::read_tasks(yaml_task_name.trim().to_string());
                 Connection::install_package_no_tty(&mut connections, &mut tasks, &args);
-            } else if option_menu.trim() == "0".to_string() {
+            } else if option_menu.trim() == "0" {
                 println!("Exiting...");
                 break;
             }
@@ -78,24 +78,24 @@ fn main() {
 
             println!("Option: ");
             let _ = stdin.read_line(&mut option_menu);
-            if option_menu.trim() == "1".to_string() {
+            if option_menu.trim() == "1" {
                 let new_connection = Connection::create_connection();
                 connections.push(new_connection);
-            } else if option_menu.trim() == "2".to_string() {
+            } else if option_menu.trim() == "2" {
                 Connection::list_connection(&mut connections);
-            } else if option_menu.trim() == "3".to_string() {
+            } else if option_menu.trim() == "3" {
                 Connection::test_connection(&mut connections);
-            } else if option_menu.trim() == "4".to_string() {
+            } else if option_menu.trim() == "4" {
                 Connection::install_package(&mut connections);
-            } else if option_menu.trim() == "5".to_string() {
+            } else if option_menu.trim() == "5" {
                 Connection::uninstall_package(&mut connections);
-            } else if option_menu.trim() == "6".to_string() {
+            } else if option_menu.trim() == "6" {
                 let mut yaml_task_name = String::new();
                 println!("Type the task YAML file name:");
                 let _ = stdin.read_line(&mut yaml_task_name);
                 let mut tasks: Vec<Task> = Task::read_tasks(yaml_task_name.trim().to_string());
                 Connection::install_package_no_tty(&mut connections, &mut tasks, &args);
-            } else if option_menu.trim() == "0".to_string() {
+            } else if option_menu.trim() == "0" {
                 println!("Exiting...");
                 break;
             }

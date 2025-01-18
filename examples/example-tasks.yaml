@@ -8,7 +8,10 @@
 
 # - name: CopyToRemote
 #   task: CopyToRemote
-#   file: ~/Dev/Rust/nonsible/README.md
+#   srcFile: ./testing
+#   dstFile: ./hola/
+#   matchLabels:
+#     - contabo
 
 # - name: Simply run 1
 #   task: Run

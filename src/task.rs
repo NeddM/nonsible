@@ -10,7 +10,8 @@ pub struct Task {
     pub task: TaskType,
     pub command: String,
     pub package: String,
-    pub file: String,
+    pub src_file: String,
+    pub dst_file: String,
     pub matchlabels: Vec<String>,
 }
 
@@ -48,7 +49,7 @@ impl Task {
             prettytable::row![cb -> "NAME", cb -> "TASK", cb -> "PACKAGE", cb -> "MATCH LABELS"],
         );
 
-        if tasks.len() > 0 {
+        if tasks.is_empty() {
             for order_task in tasks {
                 table.add_row(Row::new(vec![
                     Cell::new(&order_task.name),
@@ -113,7 +114,11 @@ impl Task {
                     Some(package) => package.to_string(),
                     None => " ".to_string(),
                 };
-                let file = match task_order["file"].as_str() {
+                let src_file = match task_order["srcFile"].as_str() {
+                    Some(file) => file.to_string(),
+                    None => " ".to_string(),
+                };
+                let dst_file = match task_order["dstFile"].as_str() {
                     Some(file) => file.to_string(),
                     None => " ".to_string(),
                 };
@@ -131,7 +136,8 @@ impl Task {
                     task,
                     command,
                     package,
-                    file,
+                    src_file,
+                    dst_file,
                     matchlabels,
                 };
                 tasks.push(task);
