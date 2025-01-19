@@ -63,11 +63,7 @@ impl Connection {
         let mut r_sudo: String = String::new();
         let _ = stdin.read_line(&mut r_sudo);
 
-        let sudo = if r_sudo.trim().to_uppercase() == "Y" {
-            true
-        } else {
-            false
-        };
+        let sudo = r_sudo.trim().eq_ignore_ascii_case("y");
 
         let sudo_password = if r_sudo.trim().to_uppercase() == "Y" {
             println!("Type the root password: ");
