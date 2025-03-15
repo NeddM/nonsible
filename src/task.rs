@@ -13,6 +13,7 @@ pub struct Task {
     pub src_file: String,
     pub dst_file: String,
     pub matchlabels: Vec<String>,
+    pub include: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq)]
@@ -23,6 +24,7 @@ pub enum TaskType {
     UpdateAll,
     UpgradeAll,
     CopyToRemote,
+    Include,
     Nothing,
 }
 
@@ -35,6 +37,7 @@ impl std::fmt::Display for TaskType {
             TaskType::UpdateAll => write!(f, "UpdateAll"),
             TaskType::UpgradeAll => write!(f, "UpgradeAll"),
             TaskType::CopyToRemote => write!(f, "CopyToRemote"),
+            TaskType::Include => write!(f, "Include"),
             TaskType::Nothing => write!(f, "Nothing"),
         }
     }
@@ -73,7 +76,7 @@ impl Task {
 
     pub fn read_tasks(task_yaml: String) -> Vec<Task> {
         // Reads the YAML tasks file
-        let mut file = File::open(task_yaml).expect("Couldn't open the file");
+        let mut file = File::open(&task_yaml).expect("Couldn't open the file");
 
         // Reads the yaml and parses it to an String
         let mut yaml_string = String::new();
@@ -103,6 +106,7 @@ impl Task {
                     Some("UpdateAll") => TaskType::UpdateAll,
                     Some("UpgradeAll") => TaskType::UpgradeAll,
                     Some("CopyToRemote") => TaskType::CopyToRemote,
+                    Some("Include") => TaskType::Include,
                     None => TaskType::Nothing,
                     Some(&_) => TaskType::Nothing,
                 };
@@ -131,6 +135,11 @@ impl Task {
                     None => Vec::new(),
                 };
 
+                let include = match task_order["include"].as_str() {
+                    Some(include) => Some(include.to_string()),
+                    None => None,
+                };
+
                 let task = Task {
                     name,
                     task,
@@ -139,7 +148,15 @@ impl Task {
                     src_file,
                     dst_file,
                     matchlabels,
+                    include,
                 };
+
+                // Si la tarea incluye otro archivo YAML, lee y agrega esas tareas
+                if let Some(include_file) = &task.include {
+                    let included_tasks = Task::read_tasks(include_file.clone());
+                    tasks.extend(included_tasks);
+                }
+
                 tasks.push(task);
             }
         }
