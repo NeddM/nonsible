@@ -1,0 +1,5 @@
+- name: Run copy files configuration
+  task: Include
+  include: ./examples/file-called.yml
+  matchLabels:
+    - nedd-testing

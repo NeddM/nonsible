@@ -1,0 +1,30 @@
+- name: Install tree
+  task: Install
+  package: tree
+  matchLabels:
+    - nedd-testing
+
+- name: CopyToRemote
+  task: CopyToRemote
+  srcFile: ./hola/
+  dstFile: ./
+  # matchLabels:
+  #   - nedd-testing
+
+
+# - name: Update with label
+#   task: UpdateAll
+#   package: 
+#   matchLabels: 
+#     - testing
+#
+# - name: Upgrade with label
+#   task: UpgradeAll
+#   package: 
+#   matchLabels: 
+#     - testing
+
+# - name: Uninstall tree
+#   task: Uninstall
+#   package: tree
+
